@@ -1,42 +1,46 @@
 
 Create an EC2 Tab Section
 
-From your AWS Zconsole, perform a search for EC2. This will bring you to this service.
+From your AWS Console, perform a search for EC2. Clicking on the link will bring you to this service dashboard.
 
-Close all open selections on the left side of the screen. We simply want to select them as needed.
+Close all open drop down menu selections on the left side of the screen. We simply want to select them as needed.
 
-From the drop down text Select Security Group.
+From the drop down in Network & Security, select Security Group.
 
 Create a security group
 Provide a name example: sshandhomeoage
 Copy and paste the name in the description field
 We do nothing with the VPC as there should be one present.
 
-(I discovered that for whatever reason, when I created my Launch Instance, several fields were blank and caused an error. In that situation hit refresh on those fields, they will fill in and you will be able to continue your Launch I stance creation. Side note no. 2, my PC is old and underpowered and my tablet was able to create a Launch Instance the way it should be done.)
-
 Create an inbound rule
-Use http
-Any ipv4
+First select HTTP from the drop down. Port and protocol will be greyed out.
+Then select Anyipv4
 
-Ssh
-Anyipv4
+Your first invound rule is created.
 
-We use nothing else. Then 
-we move the mouse completely around Outbound Rule section
+Select SSH from the drop down. Port and protocol will be greyed out.
+Then select Anyipv4
+There will be a dropdown ip path of 0.0.0.0 
+Use this value for both http and ssh.
 
-After that click on Orange Button Create security group
+Now we have created our invound rules, one for normal IPv4 web traffic and SSH for secure connection to our instance.
 
-This security group will be used when we move on to our Launch Instance
+At this point it must be soecified that we completely disregard Outbound Rule. We do not touch it. 
 
-Create a Launch Instance
+Move your cursor to the far right of the browser window as we move the mouse completely around Outbound Rule section
+
+Once completed, click on the orange button Create Security group.
+
+This security group will be used when we continue on to create our Launch Template.
+
+Create a Launch Template
 First create a launch instance
 
 Give it a name
 Use select a security group
 Choose the group name we just made up
-Ex. sshandhomeoage
-Paste a description or provide a custom one describing what the template is for.
-
+Ex. lizzo-free-zone
+Copy the name and paste it into the description field.
 
 Advanced section
 Run to github and from the listed repository, open up the file named EC2 script. Use the double rectangle to copy the text in its entirety.
@@ -54,14 +58,19 @@ Then after a few seconds to roughly 10 seconds, move your mouse to the right to 
 
 Pay attention to the unique i-xxxxxxx value specified as the instance because you will want to verify that your script properly ran creating your EC2.
 
-When it starts running, the instance will say initializing and running once it is runningclick on instances from the tab or using the link select instance. Hit the double rectangle on public DNS to grab the link to the site.
+Once it starts running, the instance will say initializing while starting up. This changes to running once all conditions for booting have been met. click on instances from the tab or using the link select instance. Click on the double rectangle on public DNS to copy the public  link to your EC2 Instance.
 Open a new tab and type “http://” and then paste in the name of the EC2. Hit enter.
 There should be a simple website on view with an image stating w3 schools.
 
-The purpose of using an EC2 startup script is to Automate the creation of instances with an Instance Template
+The purpose of using an EC2 startup script is to automate the creation of instances with an Instance Template
 
 Once we have created the instance, we can modify it to quickly spin up new instances branching off from our original template in the same or different regions.
 
-The last task to perform once you have completed creating your instance will be to test it down.
-Select the instance and in the actions button click on terminate instance.
+The last task to perform once you have completed creating your instance will be to tear it down.
+Select the instance and from the actions button click on terminate instance.
 Once the instance is terminated, billing will halt.
+
+
+Additional information to be conscious of 
+
+A budget will need to be created just so that one does not get billed unnecessarily due to the fact it could become quite expensive. Create one after the instance party has been completed. It is suggested that you set a $20 limit.
