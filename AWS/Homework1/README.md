@@ -1,76 +1,97 @@
+Building out a customized EC2 Startup script for an EC2 Instance
 
-Create an EC2 Tab Section
+Start by logging into your AWS account. It is preferable to use an IAM user instead of the Root User. Make sure that your IAM user has administrative console permissions.
 
-From your AWS Console, perform a search for EC2. Clicking on the link will bring you to this service dashboard.
+ Once logged in, go to the search bar and search for EC2
 
-Close all open drop down menu selections on the left side of the screen. We simply want to select them as needed.
+Click on EC2 and it will take you to the Dashboard. Once at the dashboard, collapse every menu except EC2. We will start with creating a Security Group. Open up the Network & Security menu. Click on Security Groups. Move the mouse to the orange button that says Create Security Group and click it.
+Move to the section that says Basic Details and in this example, use lizzo-free-zone as your group name. Then copy it into the description field.
 
-From the drop down in Network & Security, select Security Group.
+The VPC will automatically populate so we can move past that to the Inbound Rules section.
+Click on Add Rule, and for Type select HTTP from the dropdown. Protocol and Port range will be greyed out. For the Source dropdown, select AnyIPv4.
+With this we have created our first Inbound Rule.
+Press Add Rule again, because we need to add some security to our Security Group.
 
-Create a security group
-Provide a name example: sshandhomeoage
-Copy and paste the name in the description field
-We do nothing with the VPC as there should be one present.
+Select SSH from the dropdown. THe Protocol and Port Range are greyed out again. FOr HTTP, the port is 80 and for SSH the port is 22.
 
-Create an inbound rule
-First select HTTP from the drop down. Port and protocol will be greyed out.
-Then select Anyipv4
+Repeat the above actions for Source by selecting IPv4 again.
 
-Your first invound rule is created.
+In the greyed out section next to Source, both dropdowns should have 0.0.0.0 chosen from the dropbox. One might lready be present, but SSH needs its own entry as well.
 
-Select SSH from the drop down. Port and protocol will be greyed out.
-Then select Anyipv4
-There will be a dropdown ip path of 0.0.0.0 
-Use this value for both http and ssh.
+The next step is very VERY important. DO NOT TOUCH OUTBOUND RULE!!!
 
-Now we have created our invound rules, one for normal IPv4 web traffic and SSH for secure connection to our instance.
+Move the cursor to the farthest right you can go in the window and move around the Outbound Rule section. 
 
-At this point it must be soecified that we completely disregard Outbound Rule. We do not touch it. 
+At the bottom right of the screen, locate the orange button that says Create Security Group and click it.
 
-Move your cursor to the far right of the browser window as we move the mouse completely around Outbound Rule section
+If you are successful a green box will appear on the next screen with the name of your security group along with a link to it.
+You can check the box that will show details about yur newly created Security group, incloudig the name the system assigned it as well as the your name you assigned it. 
 
-Once completed, click on the orange button Create Security group.
+Most of the details can be covered later, but there are a few important things to note.
+Security Group name, we will be using this next. It will have our lizzo-free-zone.
+Owner will be the account number of your AWS account.
+3. In the section below owner, you will see that your security group has 2 inbound rules and they are listed as the SSH and HTTP rules we specified.
 
-This security group will be used when we continue on to create our Launch Template.
+Collapse Network & Security and Open up Instances
 
-Create a Launch Template
-First create a launch instance
+Click on Launch Template
+We will need to create a Launch Template so we can create an Instance of our EC2, meaning we will create a website that is capable of accepting an inbound connection through HTTP or securely connecting through SSH.
 
-Give it a name
-Use select a security group
-Choose the group name we just made up
-Ex. lizzo-free-zone
-Copy the name and paste it into the description field.
+Once again, move to the far right to click on the orange button Create Launch Template.
+Use the name we created for our security group for the template name and description.
+ select a free tier eligible option, for me it was t3.micro
 
-Advanced section
-Run to github and from the listed repository, open up the file named EC2 script. Use the double rectangle to copy the text in its entirety.
-Paste it in the box at the bottom of the advanced section. Do not click on the box that says use base16. Ignore it.
-Once the script is in place, move your cursor to the Orange Button named Create Launch Template and select it.
+In the INstance Type Section, for Instance Type
 
-If you have properly created it, the resulting box will show a blue bar as it creates, turning to a green success indicator showing you that the Launch Template was created.
+Create a key pair
+Give it a unique name
+Leave RSA selected
+The private key format is .pem
+Move to the orange button to Create Key Pair.
 
-Starting a Launch Template
-Once we have the Launch Instance created, click on the link to go to the launch instance page.
-Click on the box next to the launch instance you just created. There are two different ways to launch an instance, either click on the Connect button above your selection criteria, or go to the Actions drop down and the first menu item says Launch Instance from a Template.
-Select that option
+Move down to Network Settings
+For availability zone select a server in the region you are in. For example, for N. Virginia, it is us-east-1. I will select an availability zone of us-east-1a to be within my region.
+Use an existing security group, select the group we just created, lizzo-free-zone from te dropdown.
 
-Then after a few seconds to roughly 10 seconds, move your mouse to the right to click on the orange button labeled Launch Instance.
+Move to Advanced Details
+Open it up and move to the bottom of the page.
 
-Pay attention to the unique i-xxxxxxx value specified as the instance because you will want to verify that your script properly ran creating your EC2.
+There is a text box titled user data -optional.
+We will grab a provided ec2script from a repository.
+We will use my repository for an example
 
-Once it starts running, the instance will say initializing while starting up. This changes to running once all conditions for booting have been met. click on instances from the tab or using the link select instance. Click on the double rectangle on public DNS to copy the public  link to your EC2 Instance.
-Open a new tab and type “http://” and then paste in the name of the EC2. Hit enter.
-There should be a simple website on view with an image stating w3 schools.
+https://github.com/BlazingFistOfInferno/class7/blob/main/AWS/Homework1/EC2StartupScript
+Click on the double rectangles to copy the script in its entirety.
+Paste it into the user data box.vThen move your mouse out of the user data box towards the far right to click on the orange button and Create Launch Template.
 
-The purpose of using an EC2 startup script is to automate the creation of instances with an Instance Template
 
-Once we have created the instance, we can modify it to quickly spin up new instances branching off from our original template in the same or different regions.
+You have created the launch template. Click on the instance in the green linked box.
 
-The last task to perform once you have completed creating your instance will be to tear it down.
-Select the instance and from the actions button click on terminate instance.
-Once the instance is terminated, billing will halt.
+Click Actions -> Launch Instance from Template
+Then select the orange button
+Launch Instance
+Choose a launch template
+The first instance will take time but it will auto populate as it is the default.
+
+Then under Application and OS IMages select Amazon Linux AWS
+
+Orange button click Launch Instance
+
+If the successfully completes, there will be a green box, click on the instance i-xxxx value.
+Look for instance state, once it is running you can then click on the double rectangle for Public DNS Server.
+
+Open up a new browser tab and type http://, then paste the link you copied behind it. Hit return and you should have a template named Samurai Katana with a w3 schools image.
+
+If you see it, then your instance has successfully launched.
+
+Once that has happened, you will need to shut down the instance to stop the charging that is taking place.
+
+Go to instances. Click on the Actions button and  after selecting the instance that was running, click on terminate instance. This will shutdown the instance.
+
+Once this process has completed, you can state that you have successfully created an EC2 Instance and then torn it down.
 
 
 Additional information to be conscious of 
 
 A budget will need to be created just so that one does not get billed unnecessarily due to the fact it could become quite expensive. Create one after the instance party has been completed. It is suggested that you set a $20 limit.
+
